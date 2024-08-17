@@ -17,4 +17,17 @@ public class CustomerMapper {
                 .address(request.address())
                 .build();
     }
+
+    public CustomerResponse fromCustomer(Customer customer) {
+        if (customer == null) {
+            return null;
+        }
+        return new CustomerResponse(
+                customer.getId(),
+                customer.getFirstname(),
+                customer.getLastname(),
+                customer.getEmail(),
+                customer.getAddress()
+        );
+    }
 }
