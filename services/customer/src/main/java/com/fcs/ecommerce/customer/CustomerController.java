@@ -32,7 +32,12 @@ public class CustomerController {
     }
 
     @GetMapping("/exists/{id}")
-    public ResponseEntity<Boolean> existsById(@PathVariable("customer-id") String id) {
+    public ResponseEntity<Boolean> existsById(@PathVariable("id") String id) {
         return ResponseEntity.ok(this.service.existsById(id));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CustomerResponse> findById(@PathVariable("id") String customerId) {
+        return ResponseEntity.ok(this.service.findById(customerId));
     }
 }
