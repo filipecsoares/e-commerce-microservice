@@ -1,0 +1,22 @@
+server:
+  port: 9020
+spring:
+  datasource:
+    url: jdbc:h2:mem:product-db
+    username: sa
+    password: sa
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    baseline-on-migrate: true
+    enabled: true
+    baseline-description: "init"
+    baseline-version: 0
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
