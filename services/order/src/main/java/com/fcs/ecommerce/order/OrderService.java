@@ -28,9 +28,9 @@ public class OrderService {
         var customer = this.customerClient.findCustomerById(request.customerId())
                 .orElseThrow(() -> new BusinessException("Cannot create order:: No customer exists with the provided ID"));
 
-        var purchasedProducts = productClient.purchaseProducts(request.products());
+        var purchasedProducts = this.productClient.purchaseProducts(request.products());
 
-        var order = this.repository.save(mapper.toOrder(request));
+        var order = this.repository.save(this.mapper.toOrder(request));
 
         for (PurchaseRequest purchaseRequest : request.products()) {
             orderLineService.saveOrderLine(
