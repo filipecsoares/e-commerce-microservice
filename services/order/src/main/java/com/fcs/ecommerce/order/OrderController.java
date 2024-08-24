@@ -22,4 +22,9 @@ public class OrderController {
     public ResponseEntity<List<OrderResponse>> findAll() {
         return ResponseEntity.ok(this.service.findAllOrders());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderResponse> findById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(this.service.findById(id));
+    }
 }

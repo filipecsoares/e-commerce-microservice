@@ -6,6 +6,7 @@ import com.fcs.ecommerce.orderline.OrderLineRequest;
 import com.fcs.ecommerce.orderline.OrderLineService;
 import com.fcs.ecommerce.product.ProductClient;
 import com.fcs.ecommerce.product.PurchaseRequest;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -68,5 +69,11 @@ public class OrderService {
                 .stream()
                 .map(this.mapper::fromOrder)
                 .collect(Collectors.toList());
+    }
+
+    public OrderResponse findById(Long id) {
+        return this.repository.findById(id)
+                .map(this.mapper::fromOrder)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("No order found with the provided ID: %d", id)));
     }
 }
