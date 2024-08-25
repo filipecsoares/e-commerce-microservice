@@ -2,6 +2,8 @@ package com.fcs.ecommerce.order;
 
 import com.fcs.ecommerce.customer.CustomerClient;
 import com.fcs.ecommerce.exception.BusinessException;
+import com.fcs.ecommerce.kafka.OrderConfirmation;
+import com.fcs.ecommerce.kafka.OrderProducer;
 import com.fcs.ecommerce.orderline.OrderLineRequest;
 import com.fcs.ecommerce.orderline.OrderLineService;
 import com.fcs.ecommerce.product.ProductClient;
@@ -22,6 +24,7 @@ public class OrderService {
     private final CustomerClient customerClient;
     private final ProductClient productClient;
     private final OrderLineService orderLineService;
+    private final OrderProducer orderProducer;
 
     @Transactional
     public Long createOrder(OrderRequest request) {
@@ -50,16 +53,16 @@ public class OrderService {
 //                customer
 //        );
 //        paymentClient.requestOrderPayment(paymentRequest);
-//
-//        orderProducer.sendOrderConfirmation(
-//                new OrderConfirmation(
-//                        request.reference(),
-//                        request.amount(),
-//                        request.paymentMethod(),
-//                        customer,
-//                        purchasedProducts
-//                )
-//        );
+
+        orderProducer.sendOrderConfirmation(
+                new OrderConfirmation(
+                        request.reference(),
+                        request.amount(),
+                        request.paymentMethod(),
+                        customer,
+                        purchasedProducts
+                )
+        );
 
         return order.getId();
     }
