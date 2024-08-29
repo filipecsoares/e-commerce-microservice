@@ -3,6 +3,7 @@ package com.fcs.ecommerce.kafka;
 import static com.fcs.ecommerce.notification.NotificationType.ORDER_CONFIRMATION;
 import static com.fcs.ecommerce.notification.NotificationType.PAYMENT_CONFIRMATION;
 import static java.lang.String.format;
+import com.fcs.ecommerce.email.EmailService;
 import com.fcs.ecommerce.kafka.order.OrderConfirmation;
 import com.fcs.ecommerce.kafka.payment.PaymentConfirmation;
 import com.fcs.ecommerce.notification.Notification;
@@ -20,6 +21,8 @@ import java.time.LocalDateTime;
 public class NotificationsConsumer {
 
     private final NotificationRepository repository;
+    private final EmailService emailService;
+
     @KafkaListener(topics = "payment-topic")
     public void consumePaymentSuccessNotifications(PaymentConfirmation paymentConfirmation) throws MessagingException {
         log.info(format("Consuming the message from payment-topic Topic:: %s", paymentConfirmation));
@@ -31,6 +34,12 @@ public class NotificationsConsumer {
                         .build()
         );
         var customerName = paymentConfirmation.customerFirstname() + " " + paymentConfirmation.customerLastname();
+        emailService.sendPaymentSuccessEmail(
+                paymentConfirmation.customerEmail(),
+                customerName,
+                paymentConfirmation.amount(),
+                paymentConfirmation.orderReference()
+        );
     }
 
     @KafkaListener(topics = "order-topic")
@@ -44,5 +53,12 @@ public class NotificationsConsumer {
                         .build()
         );
         var customerName = orderConfirmation.customer().firstname() + " " + orderConfirmation.customer().lastname();
+        emailService.sendOrderConfirmationEmail(
+                orderConfirmation.customer().email(),
+                customerName,
+                orderConfirmation.totalAmount(),
+                orderConfirmation.orderReference(),
+                orderConfirmation.products()
+        );
     }
 }
