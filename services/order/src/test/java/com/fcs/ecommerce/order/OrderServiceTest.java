@@ -16,6 +16,7 @@ import com.fcs.ecommerce.payment.PaymentRequest;
 import com.fcs.ecommerce.product.ProductClient;
 import com.fcs.ecommerce.product.PurchaseRequest;
 import com.fcs.ecommerce.product.PurchaseResponse;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -75,5 +76,31 @@ class OrderServiceTest {
         verify(orderLineService, times(1)).saveOrderLine(any(OrderLineRequest.class));
         verify(paymentClient, times(1)).requestOrderPayment(any(PaymentRequest.class));
         verify(orderProducer, times(1)).sendOrderConfirmation(any(OrderConfirmation.class));
+    }
+
+    @Test
+    void findByIdSuccessfully() {
+        // Arrange
+        Order order = mock(Order.class);
+        when(order.getId()).thenReturn(1L);
+        when(repository.findById(1L)).thenReturn(Optional.of(order));
+        OrderResponse response = mock(OrderResponse.class);
+        when(mapper.fromOrder(order)).thenReturn(response);
+
+        // Act
+        OrderResponse result = orderService.findById(1L);
+
+        // Assert
+        assertEquals(response, result);
+    }
+
+    @Test
+    void shouldThrowsWhenOrderNotFind() {
+        // Arrange
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> orderService.findById(1L));
+        assertEquals("No order found with the provided ID: 1", exception.getMessage());
     }
 }
