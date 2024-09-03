@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import com.fcs.ecommerce.customer.CustomerClient;
 import com.fcs.ecommerce.customer.CustomerResponse;
+import com.fcs.ecommerce.exception.BusinessException;
 import com.fcs.ecommerce.kafka.OrderConfirmation;
 import com.fcs.ecommerce.kafka.OrderProducer;
 import com.fcs.ecommerce.orderline.OrderLineRequest;
@@ -79,7 +80,19 @@ class OrderServiceTest {
     }
 
     @Test
-    void findByIdSuccessfully() {
+    void shouldThrowsWhenCustomerNotFoundOnCreateOrder() {
+        // Arrange
+        OrderRequest request = mock(OrderRequest.class);
+        when(request.customerId()).thenReturn("1");
+        when(customerClient.findCustomerById("1")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        BusinessException exception = assertThrows(BusinessException.class, () -> orderService.createOrder(request));
+        assertEquals("Cannot create order:: No customer exists with the provided ID", exception.getMessage());
+    }
+
+    @Test
+    void shouldFindByIdSuccessfully() {
         // Arrange
         Order order = mock(Order.class);
         when(order.getId()).thenReturn(1L);

@@ -40,6 +40,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handle(BusinessException exp) {
         return ResponseEntity
                 .status(BAD_REQUEST)
-                .body(exp.getMsg());
+                .body(exp.getMessage());
     }
 }
