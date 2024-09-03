@@ -63,7 +63,7 @@ The services must be started in the following order:
 ```shell
 $ docker ps | grep keycloak
 $ docker exec -it {containerID} bash
-container$ cd /opt/jboss/keycloak/bin
-container$ ./kcadm.sh config credentials --server http://localhost:8080 --realm master --user admin
-container$ ./kcadm.sh update realms/master -s sslRequired=NONE
+$ cd /opt/jboss/keycloak/bin
+$ ./kcadm.sh config credentials --server http://localhost:8080 --realm master --user admin
+$ ./kcadm.sh update realms/master -s sslRequired=NONE
 ```
